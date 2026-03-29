@@ -151,7 +151,7 @@ router.get('/recommendations', async (req, res) => {
         recommendations.push({
           center_name: f.name,
           type: 'Attendance',
-          message: \`Follow up with students at \${f.name} due to low average attendance (\${(avg_attendance * 100).toFixed(0)}%).\`
+          message: `Follow up with students at ${f.name} due to low average attendance ${(avg_attendance * 100).toFixed(0)}%.`
         });
       }
 
@@ -160,7 +160,7 @@ router.get('/recommendations', async (req, res) => {
         recommendations.push({
           center_name: f.name,
           type: 'Training',
-          message: \`Teacher training recommended for \${f.name} (Rating: \${rating}).\`
+          message: `Teacher training recommended for ${f.name} (Rating: ${rating}).`
         });
       }
 
@@ -169,7 +169,7 @@ router.get('/recommendations', async (req, res) => {
         recommendations.push({
           center_name: f.name,
           type: 'Operations',
-          message: \`Conduct an operational review for \${f.name} to improve revenue and conversions.\`
+          message: `Conduct an operational review for ${f.name} to improve revenue and conversions.`
         });
       }
     });
