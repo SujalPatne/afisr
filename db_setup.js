@@ -1,6 +1,6 @@
 import { Client } from 'pg';
 
-const connectionString = 'postgresql://tsdbadmin:fkg5r0atfl1dun5e@bfcl9opdwz.ikysjdfisk.tsdb.cloud.timescale.com:32129/tsdb';
+const connectionString = 'postgresql://tsdbadmin:TigerDB_afisr_2026_xYz!@bfcl9opdwz.ikysjdfisk.tsdb.cloud.timescale.com:32129/tsdb';
 
 const franchises = [
   { id: 'f1', name: 'Metro Brain Latur City', location: 'Latur, Maharashtra', manager: 'Rahul Deshmukh', teacher_rating: 4.5 },

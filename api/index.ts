@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 const app = express();
 app.use(express.json());
 
-const rawUrl = process.env.DATABASE_URL || 'postgresql://tsdbadmin:fkg5r0atfl1dun5e@bfcl9opdwz.ikysjdfisk.tsdb.cloud.timescale.com:32129/tsdb';
+const rawUrl = process.env.DATABASE_URL || 'postgresql://tsdbadmin:TigerDB_afisr_2026_xYz!@bfcl9opdwz.ikysjdfisk.tsdb.cloud.timescale.com:32129/tsdb';
 const pool = new Pool({
   connectionString: rawUrl.replace('+psycopg', ''),
   ssl: { rejectUnauthorized: false }
