@@ -4,7 +4,8 @@ import Dashboard from './components/Dashboard';
 import ChurnPredictor from './components/ChurnPredictor';
 import Recommendations from './components/Recommendations';
 import AdminPanel from './components/AdminPanel';
-import { LayoutDashboard, UserMinus, Lightbulb, BrainCircuit, Database } from 'lucide-react';
+import StudentProgress from './components/StudentProgress';
+import { LayoutDashboard, UserMinus, Lightbulb, BrainCircuit, Database, Activity } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -53,6 +54,16 @@ export default function App() {
             </button>
 
             <button
+              onClick={() => setActiveTab('progress')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'progress' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Activity className="w-5 h-5" />
+              Student Progress
+            </button>
+
+            <button
               onClick={() => setActiveTab('admin')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === 'admin' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
@@ -83,6 +94,7 @@ export default function App() {
               {activeTab === 'dashboard' && 'Franchise Intelligence'}
               {activeTab === 'churn' && 'Student Retention'}
               {activeTab === 'recommendations' && 'Actionable Insights'}
+              {activeTab === 'progress' && 'Student Progress Tracking'}
               {activeTab === 'admin' && 'Data Management'}
             </h1>
           </header>
@@ -91,6 +103,7 @@ export default function App() {
             {activeTab === 'dashboard' && <Dashboard />}
             {activeTab === 'churn' && <ChurnPredictor />}
             {activeTab === 'recommendations' && <Recommendations />}
+            {activeTab === 'progress' && <StudentProgress />}
             {activeTab === 'admin' && <AdminPanel />}
           </div>
         </main>
