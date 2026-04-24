@@ -10,8 +10,14 @@ export default function Dashboard() {
   // Fetch dynamic insights from backend API
   useEffect(() => {
     fetch('/api/franchise_insights')
-      .then(res => res.json())
-      .then(data => setInsights(data))
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) setInsights(data);
+        else setInsights([]);
+      })
       .catch(err => console.error("Failed to fetch insights", err));
   }, [franchises, students]); // Re-fetch when data changes
 

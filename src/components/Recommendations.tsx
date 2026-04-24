@@ -8,8 +8,14 @@ export default function Recommendations() {
 
   const fetchRecommendations = () => {
     fetch('/api/recommendations')
-      .then(res => res.json())
-      .then(data => setRecommendations(data))
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) setRecommendations(data);
+        else setRecommendations([]);
+      })
       .catch(err => console.error("Failed to fetch recommendations", err));
   };
 

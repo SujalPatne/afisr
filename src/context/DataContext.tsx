@@ -37,9 +37,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const fetchData = async () => {
     try {
       const res = await fetch('/api/data');
+      if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
-      setFranchises(data.franchises);
-      setStudents(data.students);
+      setFranchises(Array.isArray(data?.franchises) ? data.franchises : []);
+      setStudents(Array.isArray(data?.students) ? data.students : []);
     } catch (error) {
       console.error("Failed to fetch data", error);
     } finally {
