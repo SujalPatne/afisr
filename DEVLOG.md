@@ -68,3 +68,21 @@ Jumped straight from analysis into implementation. Got 3 major features shipped:
 Phase 1.2: Login page + role-based access. Then Phase 2.2: daily attendance marking for teachers.
 
 ---
+
+## Session — 13 May 2026 (12:30 AM)
+
+### What we built / fixed
+
+Caught a potential security vector and resolved it immediately:
+
+**1. Key Rotation & Security Hardening**
+- Noticed previously hardcoded TimescaleDB connection strings in repo history.
+- Formally rotated the `tsdbadmin` database password at the Cloud provider level.
+- Rendered all historical credential leaks in older commits completely harmless.
+
+**2. Environment-Driven Application Lifecycle**
+- Implemented full `.env` support natively via the `dotenv` module.
+- Sanitized `server.ts`, `api/index.ts`, and `db_setup.js` to decouple connection parameters from logic.
+- Synchronized safe repository states to remote origin and paved way for secure Vercel runtime injection.
+
+---
