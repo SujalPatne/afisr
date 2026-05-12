@@ -1,14 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataProvider } from './context/DataContext';
 import Dashboard from './components/Dashboard';
 import ChurnPredictor from './components/ChurnPredictor';
 import Recommendations from './components/Recommendations';
 import AdminPanel from './components/AdminPanel';
 import StudentProgress from './components/StudentProgress';
-import { LayoutDashboard, UserMinus, Lightbulb, BrainCircuit, Database, Activity } from 'lucide-react';
+import TodaysFocus from './components/TodaysFocus';
+import FeesDashboard from './components/FeesDashboard';
+import { 
+  LayoutDashboard, UserMinus, Lightbulb, BrainCircuit, 
+  Database, Activity, Zap, IndianRupee, Bell
+} from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('focus');
+  const [alertCount, setAlertCount] = useState(0);
+
+  // Fetch unread alert count for badge
+  useEffect(() => {
+    fetch('/api/alerts/count')
+      .then(r => r.json())
+      .then(data => setAlertCount(data.count || 0))
+      .catch(() => {});
+  }, [activeTab]); // refresh on tab change
+
+  const navItems = [
+    { id: 'focus', label: "Today's Focus", icon: Zap, badge: alertCount },
+    { id: 'dashboard', label: 'Center Insights', icon: LayoutDashboard },
+    { id: 'fees', label: 'Fee Collection', icon: IndianRupee },
+    { id: 'progress', label: 'Student Progress', icon: Activity },
+    { id: 'churn', label: 'Who Might Drop Out?', icon: UserMinus },
+    { id: 'recommendations', label: 'Action Items', icon: Lightbulb },
+    { id: 'admin', label: 'Manage Data', icon: Database },
+  ];
+
+  const getPageTitle = () => {
+    switch (activeTab) {
+      case 'focus': return "Today's Focus";
+      case 'dashboard': return 'Center Insights';
+      case 'fees': return 'Fee Collection';
+      case 'churn': return 'Who Might Drop Out?';
+      case 'recommendations': return 'Action Items';
+      case 'progress': return 'Student Progress';
+      case 'admin': return 'Manage Students & Centers';
+      default: return 'AFISR';
+    }
+  };
 
   return (
     <DataProvider>
@@ -19,59 +56,32 @@ export default function App() {
             <div className="bg-indigo-500 p-2 rounded-lg">
               <BrainCircuit className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold tracking-tight">AFISR</span>
+            <div>
+              <span className="text-xl font-bold tracking-tight block leading-tight">AFISR</span>
+              <span className="text-[10px] text-slate-400 uppercase tracking-widest">Intelligence System</span>
+            </div>
           </div>
           
-          <nav className="flex-1 px-4 space-y-2 mt-4">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                activeTab === 'dashboard' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <LayoutDashboard className="w-5 h-5" />
-              Insights Dashboard
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('churn')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                activeTab === 'churn' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <UserMinus className="w-5 h-5" />
-              Churn Predictor
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('recommendations')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                activeTab === 'recommendations' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Lightbulb className="w-5 h-5" />
-              Recommendations
-            </button>
-
-            <button
-              onClick={() => setActiveTab('progress')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                activeTab === 'progress' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Activity className="w-5 h-5" />
-              Student Progress
-            </button>
-
-            <button
-              onClick={() => setActiveTab('admin')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                activeTab === 'admin' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Database className="w-5 h-5" />
-              Admin Data Entry
-            </button>
+          <nav className="flex-1 px-4 space-y-1 mt-2">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${
+                  activeTab === item.id 
+                    ? 'bg-indigo-600 text-white font-medium' 
+                    : 'hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <item.icon className="w-5 h-5 shrink-0" />
+                <span className="text-sm truncate">{item.label}</span>
+                {item.badge && item.badge > 0 && (
+                  <span className="ml-auto inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-rose-500 text-white">
+                    {item.badge > 9 ? '9+' : item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
           </nav>
 
           <div className="p-6 border-t border-slate-800">
@@ -91,16 +101,14 @@ export default function App() {
         <main className="flex-1 overflow-auto">
           <header className="bg-white border-b border-slate-200 px-8 py-5 sticky top-0 z-10">
             <h1 className="text-xl font-semibold text-slate-800">
-              {activeTab === 'dashboard' && 'Franchise Intelligence'}
-              {activeTab === 'churn' && 'Student Retention'}
-              {activeTab === 'recommendations' && 'Actionable Insights'}
-              {activeTab === 'progress' && 'Student Progress Tracking'}
-              {activeTab === 'admin' && 'Data Management'}
+              {getPageTitle()}
             </h1>
           </header>
           
           <div className="p-8 max-w-7xl mx-auto">
+            {activeTab === 'focus' && <TodaysFocus />}
             {activeTab === 'dashboard' && <Dashboard />}
+            {activeTab === 'fees' && <FeesDashboard />}
             {activeTab === 'churn' && <ChurnPredictor />}
             {activeTab === 'recommendations' && <Recommendations />}
             {activeTab === 'progress' && <StudentProgress />}
