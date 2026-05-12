@@ -1,6 +1,11 @@
+import 'dotenv/config';
 import { Client } from 'pg';
 
-const connectionString = 'postgresql://tsdbadmin:TigerDB_afisr_2026_xYz!@bfcl9opdwz.ikysjdfisk.tsdb.cloud.timescale.com:32129/tsdb';
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error("ERROR: DATABASE_URL is not set in your environment.");
+  process.exit(1);
+}
 
 const franchises = [
   { id: 'f1', name: 'Metro Brain Latur City', location: 'Latur, Maharashtra', manager: 'Rahul Deshmukh', teacher_rating: 4.5 },

@@ -4,9 +4,13 @@ import { Pool } from 'pg';
 const app = express();
 app.use(express.json());
 
-const rawUrl = 'postgresql://tsdbadmin:TigerDB_afisr_2026_xYz!@bfcl9opdwz.ikysjdfisk.tsdb.cloud.timescale.com:32129/tsdb';
+const databaseUrl = process.env.DATABASE_URL || '';
+if (!databaseUrl) {
+  console.warn('WARNING: DATABASE_URL environment variable is not defined.');
+}
+
 const pool = new Pool({
-  connectionString: rawUrl.replace('+psycopg', ''),
+  connectionString: databaseUrl.replace('+psycopg', ''),
   ssl: { rejectUnauthorized: false }
 });
 
