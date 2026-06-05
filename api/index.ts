@@ -9,8 +9,14 @@ if (!databaseUrl) {
   console.warn('WARNING: DATABASE_URL environment variable is not defined.');
 }
 
+const cleanDatabaseUrl = databaseUrl
+  .replace('+psycopg', '')
+  .replace(/[?&]sslmode=[^&]+/g, '')
+  .trim()
+  .replace(/^['"]|['"]$/g, '');
+
 const pool = new Pool({
-  connectionString: databaseUrl.replace('+psycopg', ''),
+  connectionString: cleanDatabaseUrl,
   ssl: { rejectUnauthorized: false }
 });
 
@@ -417,7 +423,11 @@ router.get('/test-db', async (req, res) => {
     const sanitizedUrl = url ? url.replace(/:[^:@]+@/, ':***@') : 'NOT DEFINED';
     
     const hasQuotes = (url.startsWith('"') && url.endsWith('"')) || (url.startsWith("'") && url.endsWith("'"));
-    const cleanUrl = url.replace('+psycopg', '').trim().replace(/^['"]|['"]$/g, '');
+    const cleanUrl = url
+      .replace('+psycopg', '')
+      .replace(/[?&]sslmode=[^&]+/g, '')
+      .trim()
+      .replace(/^['"]|['"]$/g, '');
     
     const testPool = new Pool({
       connectionString: cleanUrl,
