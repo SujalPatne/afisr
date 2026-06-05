@@ -411,6 +411,42 @@ router.patch('/alerts/:id/dismiss', async (req, res) => {
   }
 });
 
+router.get('/test-db', async (req, res) => {
+  try {
+    const url = process.env.DATABASE_URL || '';
+    const sanitizedUrl = url ? url.replace(/:[^:@]+@/, ':***@') : 'NOT DEFINED';
+    
+    const hasQuotes = (url.startsWith('"') && url.endsWith('"')) || (url.startsWith("'") && url.endsWith("'"));
+    const cleanUrl = url.replace('+psycopg', '').trim().replace(/^['"]|['"]$/g, '');
+    
+    const testPool = new Pool({
+      connectionString: cleanUrl,
+      ssl: { rejectUnauthorized: false }
+    });
+    
+    const start = Date.now();
+    const { rows } = await testPool.query('SELECT 1 as val');
+    await testPool.end();
+    
+    res.json({
+      success: true,
+      sanitizedUrl,
+      hasQuotes,
+      urlLength: url.length,
+      elapsedMs: Date.now() - start,
+      queryResult: rows[0]
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: error.stack,
+      sanitizedUrl: (process.env.DATABASE_URL || '').replace(/:[^:@]+@/, ':***@'),
+      urlLength: (process.env.DATABASE_URL || '').length
+    });
+  }
+});
+
 // Use both /api and / to handle different invocations cleanly
 app.use('/api', router);
 app.use('/', router);
