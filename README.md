@@ -59,7 +59,7 @@ An active, database-driven operations and intelligence platform designed for Met
     ```
 
 3.  **Initialize & Seed Database**:
-    Run the setup script to create tables (`franchises`, `students`) and seed initial mock data:
+    Run the setup script to create all 8 database tables (`franchises`, `students`, `users`, `batches`, `fees`, `attendance`, `test_scores`, `alerts`) and seed the initial mock data:
     ```bash
     node db_setup.js
     ```
@@ -114,3 +114,14 @@ npm run start
 *   `GET /api/alerts/count`: Current unread alert count.
 *   `PATCH /api/alerts/:id/read`: Mark alert as read.
 *   `PATCH /api/alerts/:id/dismiss`: Mark alert as dismissed.
+
+---
+
+## 🔒 Connection & SSL Handling in Serverless Environments
+
+When deploying to serverless environments like Vercel with PostgreSQL/TimescaleDB databases, the node-postgres (`pg`) driver can throw a `"self-signed certificate in certificate chain"` error if the connection string includes parameter options like `sslmode=require`. This occurs because the connection-string parser overrides custom configurations such as `ssl: { rejectUnauthorized: false }`.
+
+AFISR automatically addresses this by:
+*   Pre-processing the `DATABASE_URL` to strip any conflicting `sslmode` query parameters dynamically.
+*   Configuring `ssl: { rejectUnauthorized: false }` to support self-signed and custom CA certificates seamlessly in production runtimes.
+

@@ -86,3 +86,30 @@ Caught a potential security vector and resolved it immediately:
 - Synchronized safe repository states to remote origin and paved way for secure Vercel runtime injection.
 
 ---
+
+## Session — 6 June 2026 (2:40 AM)
+
+### What we built / fixed
+
+**1. Rescued Database from WAL Loop**
+- Recovered from a persistent Cloud-side WAL leader-recovery loop that paused database visibility on the live website.
+- Deleted the corrupted database service (`bfcl9opdwz`) and provisioned a new service (`djoww0mfvl` / `afisr-db`) on the free shared tier with the required `time-series` and `ai` add-ons.
+
+**2. Expanded & Unified Schema Setup**
+- Rewrote the database setup script (`db_setup.js`) to include full schema definitions and realistic mock data seeding for all 8 application tables (`franchises`, `students`, `users`, `batches`, `fees`, `attendance`, `test_scores`, `alerts`).
+- Successfully executed the script on the new database service, setting up the foundation and loading 40 fee records (matching target revenue metrics), 8 alerts, 5 batches, and center configurations.
+
+**3. Resolved SSL Handshake Issues in Production**
+- Fixed a critical `"self-signed certificate in certificate chain"` error occurring on Vercel's serverless runtime.
+- Identified that `pg`'s connection-string parser overrides custom `ssl: { rejectUnauthorized: false }` parameters if `sslmode` is present in the query string.
+- Hardened the database connector in `api/index.ts` to dynamically strip `sslmode` parameters before pool initialization.
+
+**4. Fixed Linting & Compilation Errors**
+- Imported the missing node `path` module inside `server.ts` to fix TypeScript compiler and build steps.
+
+**5. Git Sync & Deployment**
+- Committed and pushed all database configuration changes to GitHub master.
+- Verified that the live dashboard (Vercel) successfully connects to the new database, showing full metrics, charts, "Today's Focus" inbox, and fee operations.
+
+
+---
